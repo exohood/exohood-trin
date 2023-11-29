@@ -3643,6 +3643,8 @@ dependencies = [
  "jsonrpsee",
  "log",
  "milagro_bls",
+ "parking_lot 0.11.2",
+ "portalnet",
  "reqwest",
  "serde",
  "serde_json",
@@ -4481,7 +4483,6 @@ dependencies = [
  "leb128",
  "lru",
  "parking_lot 0.11.2",
- "prometheus_exporter",
  "quickcheck",
  "r2d2",
  "r2d2_sqlite",
@@ -4504,6 +4505,7 @@ dependencies = [
  "tokio-test",
  "tracing",
  "tracing-subscriber",
+ "trin-metrics",
  "trin-utils",
  "trin-validation",
  "uds_windows",
@@ -7120,6 +7122,8 @@ dependencies = [
  "discv5",
  "ethereum_ssz",
  "ethportal-api",
+ "eyre",
+ "light-client",
  "parking_lot 0.11.2",
  "portalnet",
  "serde_json",
@@ -7156,6 +7160,16 @@ dependencies = [
  "trin-validation",
  "ureq",
  "utp-rs",
+]
+
+[[package]]
+name = "trin-metrics"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "ethportal-api",
+ "lazy_static",
+ "prometheus_exporter",
 ]
 
 [[package]]

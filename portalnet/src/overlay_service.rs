@@ -49,28 +49,26 @@ use crate::{
         query_pool::{QueryId, QueryPool, QueryPoolState, TargetKey},
     },
     gossip::propagate_gossip_cross_thread,
-    metrics::{
-        labels::{UtpDirectionLabel, UtpOutcomeLabel},
-        overlay::OverlayMetricsReporter,
-    },
     storage::{ContentStore, ShouldWeStoreContent},
-    types::{
-        messages::{
-            Accept, Content, CustomPayload, FindContent, FindNodes, Message, Nodes, Offer, Ping,
-            Pong, PopulatedOffer, ProtocolId, Request, Response, MAX_PORTAL_CONTENT_PAYLOAD_SIZE,
-            MAX_PORTAL_NODES_ENRS_SIZE,
-        },
-        node::Node,
-    },
+    types::node::Node,
     utils::portal_wire,
 };
 use ethportal_api::generate_random_node_id;
 use ethportal_api::types::distance::{Distance, Metric};
 use ethportal_api::types::enr::{Enr, SszEnr};
+use ethportal_api::types::portal_wire::{
+    Accept, Content, CustomPayload, FindContent, FindNodes, Message, Nodes, Offer, Ping, Pong,
+    PopulatedOffer, ProtocolId, Request, Response, MAX_PORTAL_CONTENT_PAYLOAD_SIZE,
+    MAX_PORTAL_NODES_ENRS_SIZE,
+};
 use ethportal_api::types::query_trace::QueryTrace;
 use ethportal_api::utils::bytes::{hex_encode, hex_encode_compact};
 use ethportal_api::OverlayContentKey;
 use ethportal_api::RawContentKey;
+use trin_metrics::{
+    labels::{UtpDirectionLabel, UtpOutcomeLabel},
+    overlay::OverlayMetricsReporter,
+};
 use trin_validation::validator::Validator;
 
 pub const FIND_NODES_MAX_NODES: usize = 32;
@@ -2523,7 +2521,7 @@ where
         callback: Option<oneshot::Sender<RecursiveFindContentResult>>,
         is_trace: bool,
     ) -> Option<QueryId> {
-        info!("Starting query for content key: {}", target);
+        debug!("Starting query for content key: {}", target);
 
         // Represent the target content ID with a node ID.
         let target_node_id = NodeId::new(&target.content_id());
@@ -2679,7 +2677,6 @@ mod tests {
     use crate::{
         config::PortalnetConfig,
         discovery::{Discovery, NodeAddress},
-        metrics::portalnet::PORTALNET_METRICS,
         overlay::OverlayConfig,
         storage::{DistanceFunction, MemoryContentStore},
         utils::db::setup_temp_dir,
@@ -2688,6 +2685,7 @@ mod tests {
         cli::DEFAULT_DISCOVERY_PORT, content_key::overlay::IdentityContentKey, distance::XorMetric,
         enr::generate_random_remote_enr,
     };
+    use trin_metrics::portalnet::PORTALNET_METRICS;
     use trin_validation::validator::MockValidator;
 
     macro_rules! poll_command_rx {
