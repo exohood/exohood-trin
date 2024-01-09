@@ -1,12 +1,12 @@
-use crate::types::content_key::beacon::BeaconContentKey;
-use crate::types::enr::Enr;
-use crate::types::portal::FindNodesInfo;
-use crate::types::portal::{
-    AcceptInfo, ContentInfo, DataRadius, PaginateLocalContentInfo, PongInfo, TraceContentInfo,
-    TraceGossipInfo,
+use crate::{
+    types::{
+        beacon::{ContentInfo, PaginateLocalContentInfo, TraceContentInfo},
+        content_key::beacon::BeaconContentKey,
+        enr::Enr,
+        portal::{AcceptInfo, DataRadius, FindNodesInfo, PongInfo, TraceGossipInfo},
+    },
+    BeaconContentValue, PossibleBeaconContentValue, RoutingTableInfo,
 };
-use crate::RoutingTableInfo;
-use crate::{BeaconContentValue, PossibleBeaconContentValue};
 use discv5::enr::NodeId;
 use jsonrpsee::{core::RpcResult, proc_macros::rpc};
 
@@ -41,8 +41,8 @@ pub trait BeaconNetworkApi {
     #[method(name = "beaconPing")]
     async fn ping(&self, enr: Enr) -> RpcResult<PongInfo>;
 
-    /// Send a FINDNODES request for nodes that fall within the given set of distances, to the designated
-    /// peer and wait for a response
+    /// Send a FINDNODES request for nodes that fall within the given set of distances, to the
+    /// designated peer and wait for a response
     #[method(name = "beaconFindNodes")]
     async fn find_nodes(&self, enr: Enr, distances: Vec<u16>) -> RpcResult<FindNodesInfo>;
 
@@ -57,10 +57,8 @@ pub trait BeaconNetworkApi {
 
     /// Lookup a target content key in the network
     #[method(name = "beaconRecursiveFindContent")]
-    async fn recursive_find_content(
-        &self,
-        content_key: BeaconContentKey,
-    ) -> RpcResult<PossibleBeaconContentValue>;
+    async fn recursive_find_content(&self, content_key: BeaconContentKey)
+        -> RpcResult<ContentInfo>;
 
     /// Lookup a target content key in the network. Return tracing info.
     #[method(name = "beaconTraceRecursiveFindContent")]
@@ -77,8 +75,8 @@ pub trait BeaconNetworkApi {
         limit: u64,
     ) -> RpcResult<PaginateLocalContentInfo>;
 
-    /// Send the provided content value to interested peers. Clients may choose to send to some or all peers.
-    /// Return the number of peers that the content was gossiped to.
+    /// Send the provided content value to interested peers. Clients may choose to send to some or
+    /// all peers. Return the number of peers that the content was gossiped to.
     #[method(name = "beaconGossip")]
     async fn gossip(
         &self,
@@ -86,8 +84,8 @@ pub trait BeaconNetworkApi {
         content_value: BeaconContentValue,
     ) -> RpcResult<u32>;
 
-    /// Send the provided content value to interested peers. Clients may choose to send to some or all peers.
-    /// Return tracing info detailing the gossip propagation.
+    /// Send the provided content value to interested peers. Clients may choose to send to some or
+    /// all peers. Return tracing info detailing the gossip propagation.
     #[method(name = "beaconTraceGossip")]
     async fn trace_gossip(
         &self,
@@ -96,7 +94,8 @@ pub trait BeaconNetworkApi {
     ) -> RpcResult<TraceGossipInfo>;
 
     /// Send an OFFER request with given ContentKey, to the designated peer and wait for a response.
-    /// Returns the content keys bitlist upon successful content transmission or empty bitlist receive.
+    /// Returns the content keys bitlist upon successful content transmission or empty bitlist
+    /// receive.
     #[method(name = "beaconOffer")]
     async fn offer(
         &self,
